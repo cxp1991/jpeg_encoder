@@ -11,6 +11,22 @@ Begin VB.Form Form1
    ScaleHeight     =   11055
    ScaleWidth      =   10905
    StartUpPosition =   3  'Windows Default
+   Begin VB.Frame BinaryShiftCoding 
+      Caption         =   "Binary Shift Codung"
+      Height          =   975
+      Left            =   8400
+      TabIndex        =   36
+      Top             =   7440
+      Width           =   2295
+      Begin VB.CommandButton BinaryShift 
+         Caption         =   "Execute"
+         Height          =   375
+         Left            =   600
+         TabIndex        =   37
+         Top             =   360
+         Width           =   1095
+      End
+   End
    Begin MSComDlg.CommonDialog CommonDialog1 
       Left            =   8520
       Top             =   9960
@@ -22,14 +38,14 @@ Begin VB.Form Form1
       Caption         =   "RLE"
       Height          =   975
       Left            =   8400
-      TabIndex        =   36
+      TabIndex        =   34
       Top             =   6240
       Width           =   2295
       Begin VB.CommandButton RLE 
          Caption         =   "Execute"
          Height          =   375
          Left            =   600
-         TabIndex        =   37
+         TabIndex        =   35
          Top             =   360
          Width           =   1095
       End
@@ -38,14 +54,14 @@ Begin VB.Form Form1
       Caption         =   "DPCM"
       Height          =   975
       Left            =   8400
-      TabIndex        =   34
+      TabIndex        =   32
       Top             =   5040
       Width           =   2295
       Begin VB.CommandButton DPCM 
          Caption         =   "Execute"
          Height          =   375
          Left            =   600
-         TabIndex        =   35
+         TabIndex        =   33
          Top             =   360
          Width           =   1095
       End
@@ -58,7 +74,7 @@ Begin VB.Form Form1
       ScaleHeight     =   125
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   125
-      TabIndex        =   15
+      TabIndex        =   13
       Top             =   2880
       Width           =   1935
    End
@@ -70,7 +86,7 @@ Begin VB.Form Form1
       ScaleHeight     =   125
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   125
-      TabIndex        =   13
+      TabIndex        =   11
       Top             =   2880
       Width           =   1935
    End
@@ -82,7 +98,7 @@ Begin VB.Form Form1
       ScaleHeight     =   125
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   125
-      TabIndex        =   12
+      TabIndex        =   10
       Top             =   360
       Width           =   1935
    End
@@ -90,7 +106,7 @@ Begin VB.Form Form1
       Caption         =   "Scan"
       Height          =   372
       Left            =   9000
-      TabIndex        =   11
+      TabIndex        =   9
       Top             =   4080
       Width           =   1095
    End
@@ -98,25 +114,9 @@ Begin VB.Form Form1
       Caption         =   "ZigZag Scan"
       Height          =   1095
       Left            =   8400
-      TabIndex        =   10
+      TabIndex        =   8
       Top             =   3720
       Width           =   2292
-   End
-   Begin VB.CommandButton Hufman 
-      Caption         =   "Encode"
-      Height          =   375
-      Left            =   9000
-      TabIndex        =   9
-      Top             =   7920
-      Width           =   1095
-   End
-   Begin VB.Frame Huffman 
-      Caption         =   "Huffman Shift  Coding"
-      Height          =   975
-      Left            =   8400
-      TabIndex        =   8
-      Top             =   7560
-      Width           =   2295
    End
    Begin VB.CommandButton quantization 
       Caption         =   "Quantize"
@@ -187,7 +187,7 @@ Begin VB.Form Form1
          ScaleHeight     =   125
          ScaleMode       =   3  'Pixel
          ScaleWidth      =   125
-         TabIndex        =   30
+         TabIndex        =   28
          Top             =   8040
          Width           =   1935
       End
@@ -197,7 +197,7 @@ Begin VB.Form Form1
          ScaleHeight     =   125
          ScaleMode       =   3  'Pixel
          ScaleWidth      =   125
-         TabIndex        =   29
+         TabIndex        =   27
          Top             =   8040
          Width           =   1935
       End
@@ -207,7 +207,7 @@ Begin VB.Form Form1
          ScaleHeight     =   125
          ScaleMode       =   3  'Pixel
          ScaleWidth      =   125
-         TabIndex        =   28
+         TabIndex        =   26
          Top             =   8040
          Width           =   1935
       End
@@ -217,7 +217,7 @@ Begin VB.Form Form1
          ScaleHeight     =   125
          ScaleMode       =   3  'Pixel
          ScaleWidth      =   125
-         TabIndex        =   24
+         TabIndex        =   22
          Top             =   5280
          Width           =   1935
       End
@@ -227,7 +227,7 @@ Begin VB.Form Form1
          ScaleHeight     =   125
          ScaleMode       =   3  'Pixel
          ScaleWidth      =   125
-         TabIndex        =   23
+         TabIndex        =   21
          Top             =   5280
          Width           =   1935
       End
@@ -237,7 +237,7 @@ Begin VB.Form Form1
          ScaleHeight     =   125
          ScaleMode       =   3  'Pixel
          ScaleWidth      =   125
-         TabIndex        =   19
+         TabIndex        =   17
          Top             =   5280
          Width           =   1935
       End
@@ -248,7 +248,7 @@ Begin VB.Form Form1
          ScaleHeight     =   125
          ScaleMode       =   3  'Pixel
          ScaleWidth      =   125
-         TabIndex        =   14
+         TabIndex        =   12
          Top             =   2760
          Width           =   1935
       End
@@ -257,7 +257,7 @@ Begin VB.Form Form1
          Caption         =   "ZIGZAG OF [V] COMPONENT"
          Height          =   255
          Left            =   5520
-         TabIndex        =   33
+         TabIndex        =   31
          Top             =   10080
          Width           =   2295
       End
@@ -266,7 +266,7 @@ Begin VB.Form Form1
          Caption         =   "ZIGZAG OF [U] COMPONENT"
          Height          =   255
          Left            =   2880
-         TabIndex        =   32
+         TabIndex        =   30
          Top             =   10080
          Width           =   2295
       End
@@ -275,7 +275,7 @@ Begin VB.Form Form1
          Caption         =   "ZIGZAG OF [Y] COMPONENT"
          Height          =   375
          Left            =   120
-         TabIndex        =   31
+         TabIndex        =   29
          Top             =   10080
          Width           =   2295
       End
@@ -284,7 +284,7 @@ Begin VB.Form Form1
          Caption         =   "QUANTIZATION OF [V]                COMPONENT"
          Height          =   375
          Left            =   5640
-         TabIndex        =   27
+         TabIndex        =   25
          Top             =   7320
          Width           =   1935
       End
@@ -293,7 +293,7 @@ Begin VB.Form Form1
          Caption         =   "QUANTIZATION  OF [U]           COMPONENT"
          Height          =   375
          Left            =   3000
-         TabIndex        =   26
+         TabIndex        =   24
          Top             =   7320
          Width           =   1935
       End
@@ -302,7 +302,7 @@ Begin VB.Form Form1
          Caption         =   "QUANTIZATION  OF [Y]          COMPONENT"
          Height          =   375
          Left            =   240
-         TabIndex        =   25
+         TabIndex        =   23
          Top             =   7320
          Width           =   1815
       End
@@ -311,7 +311,7 @@ Begin VB.Form Form1
          Caption         =   "DCT OF [V] COMPONENT"
          Height          =   255
          Left            =   5520
-         TabIndex        =   22
+         TabIndex        =   20
          Top             =   4800
          Width           =   1935
       End
@@ -320,7 +320,7 @@ Begin VB.Form Form1
          Caption         =   "DCT OF [U] COMPONENT"
          Height          =   255
          Left            =   2880
-         TabIndex        =   21
+         TabIndex        =   19
          Top             =   4800
          Width           =   1935
       End
@@ -329,7 +329,7 @@ Begin VB.Form Form1
          Caption         =   "DCT OF [Y] COMPONENT"
          Height          =   255
          Left            =   240
-         TabIndex        =   20
+         TabIndex        =   18
          Top             =   4800
          Width           =   1935
       End
@@ -338,7 +338,7 @@ Begin VB.Form Form1
          Caption         =   "RGB TO YUV CONVERTER"
          Height          =   255
          Left            =   2880
-         TabIndex        =   18
+         TabIndex        =   16
          Top             =   2280
          Width           =   2055
       End
@@ -348,7 +348,7 @@ Begin VB.Form Form1
          ForeColor       =   &H00000000&
          Height          =   255
          Left            =   360
-         TabIndex        =   17
+         TabIndex        =   15
          Top             =   2280
          Width           =   2055
       End
@@ -365,7 +365,7 @@ Begin VB.Form Form1
       Caption         =   "Label1"
       Height          =   375
       Left            =   5280
-      TabIndex        =   16
+      TabIndex        =   14
       Top             =   4680
       Width           =   975
    End
@@ -485,6 +485,11 @@ Private Type RLE_datatype
     size As Integer
 End Type
 
+Private Type rle_probability
+    value As RLE_datatype
+    number_appearance  As Integer
+End Type
+
 Dim wid, Hgt
 Dim bytenew As Byte
 Dim bytepos As Integer
@@ -534,6 +539,7 @@ Dim RLE_Output() As RLE_datatype
 Dim Huffman_Output As String
 Dim M16zeroes() As Integer
 Dim huffman_data() As Long
+Dim rle_prob_output(5) As rle_probability
 
 'Global index
 Dim index_1 As Long
@@ -543,8 +549,10 @@ Dim index_4 As Long
 Dim index_5 As Long
 Dim index_6 As Long
 Dim index_7 As Long
+Dim index_8 As Long
 Dim size_huffman_output As Long
 Dim data_jpeg() As Byte
+
 
 Private Sub open_Click()
 
@@ -616,16 +624,7 @@ Private Sub ColorTransform_Click()
                     Y_DU(pos) = shift2Right(x1)
                     U_DU(pos) = shift2Right(x2)
                     V_DU(pos) = shift2Right(x3)
-                    'Y_DU(pos) = x1 / 4
-                    'U_DU(pos) = x2 / 4
-                    'V_DU(pos) = x3 / 4
-                    
-                    
-                    'Y_DU(pos) = 0.299 * R + 0.587 * G + 0.114 * B
-                    'U_DU(pos) = -0.1687 * R - 0.3313 * G + 0.5 * B + 128
-                    'V_DU(pos) = 0.5 * R - 0.4187 * G - 0.0813 * B + 128
-                    
-                    
+                
                     'Set Picture2Box as YUV
                     If wid <= 128 And Hgt <= 128 Then
                         Picture2.PSet (i + xpos, j + ypos), RGB(Y_DU(pos) + 128, U_DU(pos) + 128, V_DU(pos) + 128)
@@ -1252,7 +1251,11 @@ Private Sub RLE_Click()
                     index_6 = index_6 + 1
                     i = i + 1
                 Loop
-                
+                    ' Mask end of block
+                    RLE_Output(index_6).length = -1
+                    RLE_Output(index_6).size = -1
+                    index_6 = index_6 + 1
+                 
                 For i = pos4 To index_6 - 1
                     Print #f2, RLE_Output(i).length;
                     Print #f2, RLE_Output(i).size
@@ -1283,6 +1286,11 @@ Private Sub RLE_Click()
                     i = i + 1
                 Loop
                 
+                    ' Mask end of block
+                    RLE_Output(index_6).length = -1
+                    RLE_Output(index_6).size = -1
+                    index_6 = index_6 + 1
+                    
                 For i = pos4 To index_6 - 1
                     Print #f3, RLE_Output(i).length;
                     Print #f3, RLE_Output(i).size
@@ -1312,6 +1320,10 @@ Private Sub RLE_Click()
                     index_6 = index_6 + 1
                     i = i + 1
                 Loop
+                    ' Mask end of block
+                    RLE_Output(index_6).length = -1
+                    RLE_Output(index_6).size = -1
+                    index_6 = index_6 + 1
                 
                 For i = pos4 To index_6 - 1
                     Print #f4, RLE_Output(i).length;
@@ -1329,6 +1341,7 @@ Private Sub RLE_Click()
     MsgBox "RLE Done!", vbOKOnly, "RLE"
     
 End Sub
+
 Private Sub init_variable()
     bytenew = 0
     bytepos = 7
@@ -1700,7 +1713,7 @@ Private Sub set_DQTinfo()
 End Sub
 Private Sub load_data_units_from_RGB_buffer(ByVal xpos As Long, ByVal ypos As Long)
     Dim x As Byte
-    Dim Y As Byte
+    Dim y As Byte
     Dim pos As Byte
     pos = 0
     Dim location As Currency
@@ -1710,7 +1723,7 @@ Private Sub load_data_units_from_RGB_buffer(ByVal xpos As Long, ByVal ypos As Lo
     Dim x1 As Currency
 
     location = ypos * wid + xpos
-    For Y = 0 To 7
+    For y = 0 To 7
         For x = 0 To 7
             R = RGB_buffer(location).R
             G = RGB_buffer(location).G
@@ -1753,7 +1766,7 @@ Private Sub load_data_units_from_RGB_buffer(ByVal xpos As Long, ByVal ypos As Lo
             
         Next x
         location = location + wid - 8
-    Next Y
+    Next y
 End Sub
 Private Sub load_bitmap(ByVal bitmap_name As String, ByRef width_original As Long, ByRef height_original As Long)
         
@@ -1984,7 +1997,7 @@ End Sub
 Private Sub Hufman_Click()
 
     Call ShiftCoding
-    
+        
     Dim Huffman_Input As String
     Dim pos As Long
     
@@ -2019,7 +2032,7 @@ Private Sub Hufman_Click()
         Print #2, RLE_Output(i).size
     Next i
     
-    ' Huffman encoding
+    Huffman encoding
     For ypos = 0 To Hgt - 1 Step 8
         For xpos = 0 To wid - 1 Step 8
             Call Huffman_Encoder(YDC_HT, YAC_HT)
@@ -2067,11 +2080,199 @@ Private Sub save_Click()
     Put #1, , CByte(&HFFD9& \ 256)
     Put #1, , CByte(&HFFD9& Mod 256)
     
-    
     Close #1, #2
 
     MsgBox "Save Done!", vbOKOnly, "Save"
     
+End Sub
+Private Sub sort_length(ByRef data As RLE_datatype)
+     Dim i, j As Long
+     Dim index As RLE_datatype
+     
+     For i = 1 To UBound(data)
+          index = data(i)
+          
+          j = i
+          Do While j > 0 And data(j - 1).length > index
+               data(j).length = data(j - 1).length
+               j = j - 1
+          Loop
+               data(j).length = index
+    Next i
+    
+End Sub
+Private Sub sort_size(ByRef data As RLE_datatype)
+    Dim x, y, i, j, min, temp1, temp2, index, index1, num, head As Long
+    head = 0
+    
+    For x = 1 To UBound(data)
+        
+        If (data(x).length = data(x - 1).length) Then
+            If x = UBound(data) Then
+                For i = head To x - 1
+                      min = i
+                      
+                      For j = i + 1 To x
+                            If (data(j).size < data(min).size) Then
+                                min = j
+                            End If
+                      Next j
+                    
+                      temp1 = data(i).length
+                      temp2 = data(i).size
+                      
+                      data(i).length = data(min).length
+                      data(i).size = data(min).size
+                      
+                      data(min).length = temp1
+                      data(min).size = temp2
+            
+                Next i
+            End If
+            Else
+                For i = head To x - 2
+                      min = i
+                      
+                      For j = i + 1 To x - 1
+                            If (data(j).size < data(min).size) Then
+                                min = j
+                            End If
+                      Next j
+                    
+                      temp1 = data(i).length
+                      temp2 = data(i).size
+                      
+                      data(i).length = data(min).length
+                      data(i).size = data(min).size
+                      
+                      data(min).length = temp1
+                      data(min).size = temp2
+            
+                Next i
+                    head = x
+            End If
+    Next x
+End Sub
+Private Sub count_probability(ByRef rle_prob_input As RLE_datatype)
+    
+    Dim temp As rle_data
+    Dim i, num As Long
+    num = 1
+    temp = rle_prob_input(0)
+    
+    For i = 1 To UBound(rle_prob_input)
+        If (rle_prob_input(i).length = rle_prob_input(i - 1).length) And (rle_prob_input(i).size = rle_prob_input(i - 1).size) Then
+            num = num + 1
+        Else
+            rle_prob_output(index_8).value = temp
+            rle_prob_output(index_8).number_appearance = num
+            index_8 = index_8 + 1
+            num = 1
+            temp = rle_prob_input(i)
+        End If
+        
+        If (i = UBound(rle_prob_input)) Then
+                rle_prob_output(index_8).value = temp
+                rle_prob_output(index_8).number_appearance = num
+                index_8 = index_8 + 1
+                temp = rle_prob_input(i)
+            End If
+    Next i
+    
+    
+End Sub
+Private Sub divide_into_equal_block()
+    Dim i, total, block_divided As Long
+    
+    Do While rle_prob_output(i).number_appearance > 0
+        total = total + 1
+        i = i + 1
+    Loop
+    
+    For i = 1 To total
+        If total Mod i = 0 And i > 1 Then
+            block_divided = i
+            Exit For
+        End If
+    Next
+    
+    If block_divided = 0 Then
+        block_divided = 1
+    End If
+    
+End Sub
+
+Private Sub sort_probability_deacreasing()
+     Dim i, j  As Long
+     Dim tmp As rle_probability
+     
+     For i = 1 To UBound(rle_prob_output) - 1
+          tmp = rle_prob_output(i)
+          j = i
+          
+          Do While j > 0 And rle_prob_output(j - 1).number_appearance < tmp.number_appearance
+               rle_prob_output(j) = rle_prob_output(j - 1)
+               j = j - 1
+          Loop
+               rle_prob_output(j) = tmp
+                
+    Next i
+End Sub
+Private Sub cal_probability(ByRef data As RLE_datatype)
+    Call sort_length(data)
+    Call sort_size
+    Call count_probability
+    Call sort_probability_deacreasing
+End Sub
+Private Sub Binary_Shift_Coding(ByRef data As RLE_datatype)
+    Call cal_probability(data)
+    Call divide_into_equal_block
+End Sub
+Private Sub BinaryShift_Click()
+    
+    Dim Binary_Shift_Coding As String
+    Dim pos1, pos2 As Long
+    Dim file As Long
+    Dim tmp(63) As RLE_datatype
+    Dim i As Long
+    
+    Binary_Shift_Coding = "Binary_Shift_Coding.txt"
+    file = FreeFile()
+    
+    Open Binary_Shift_Coding For Binary Access Write As #file
+    
+    For ypos = 0 To Hgt - 1 Step 8
+        For xpos = 0 To wid - 1 Step 8
+            
+            ' ********* Y ********
+            
+            ' Write DC
+            Put #file, , CByte(Diff_Result(pos1))
+            pos1 = pos1 + 1
+            
+            Do While (RLE_Output(i).length = -1) And (RLE_Output(i).size = -1)
+                tmp(pos2) = RLE_Output(i)
+                i = i + 1
+                pos2 = pos2 + 1
+            Loop
+            ' Binary Shift coding
+            
+            Call Binary_Shift_Coding(tmp)
+
+            ' ********* U ********
+            Put #file, , CByte(Diff_Result(pos1))
+            pos1 = pos1 + 1
+            ' Binary Shift coding
+            Call Binary_Shift_Coding
+            
+            ' ********** V ********
+            Put #file, , CByte(Diff_Result(pos1))
+            pos1 = pos1 + 1
+            ' Binary Shift coding
+            Call Binary_Shift_Coding
+        
+        Next xpos
+    Next ypos
     
 End Sub
 Private Sub exit_Click()
