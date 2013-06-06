@@ -539,7 +539,7 @@ Dim RLE_Output() As RLE_datatype
 Dim Huffman_Output As String
 Dim M16zeroes() As Integer
 Dim huffman_data() As Long
-Dim rle_prob_output(5) As rle_probability
+Dim rle_prob_output(63) As rle_probability
 
 'Global index
 Dim index_1 As Long
@@ -2085,30 +2085,40 @@ Private Sub save_Click()
     MsgBox "Save Done!", vbOKOnly, "Save"
     
 End Sub
-Private Sub sort_length(ByRef data As RLE_datatype)
-     Dim i, j As Long
+Private Sub sort_length(ByRef data() As RLE_datatype)
+     Dim i, j, num As Long
      Dim index As RLE_datatype
      
-     For i = 1 To UBound(data)
+     Do While Not (data(i).length = 0 And data(i).size = 0)
+        num = num + 1
+        i = i + 1
+     Loop
+     
+     For i = 1 To num - 1
           index = data(i)
           
           j = i
-          Do While j > 0 And data(j - 1).length > index
-               data(j).length = data(j - 1).length
+          Do While j > 0 And data(j - 1).length > index.length
+               data(j) = data(j - 1)
                j = j - 1
           Loop
-               data(j).length = index
+               data(j) = index
     Next i
     
 End Sub
-Private Sub sort_size(ByRef data As RLE_datatype)
-    Dim x, y, i, j, min, temp1, temp2, index, index1, num, head As Long
+Private Sub sort_size(ByRef data() As RLE_datatype)
+    Dim x, y, i, j, min, temp1, temp2, index, index1, num, num1, head As Long
     head = 0
     
-    For x = 1 To UBound(data)
+     Do While Not (data(i).length = 0 And data(i).size = 0)
+        num1 = num1 + 1
+        i = i + 1
+     Loop
+    
+    For x = 1 To num1 - 1
         
         If (data(x).length = data(x - 1).length) Then
-            If x = UBound(data) Then
+            If x = num1 - 1 Then
                 For i = head To x - 1
                       min = i
                       
@@ -2153,9 +2163,9 @@ Private Sub sort_size(ByRef data As RLE_datatype)
             End If
     Next x
 End Sub
-Private Sub count_probability(ByRef rle_prob_input As RLE_datatype)
+Private Sub count_probability(ByRef rle_prob_input() As RLE_datatype)
     
-    Dim temp As rle_data
+    Dim temp As RLE_datatype
     Dim i, num As Long
     num = 1
     temp = rle_prob_input(0)
@@ -2179,12 +2189,11 @@ Private Sub count_probability(ByRef rle_prob_input As RLE_datatype)
             End If
     Next i
     
-    
 End Sub
 Private Sub divide_into_equal_block()
     Dim i, total, block_divided As Long
     
-    Do While rle_prob_output(i).number_appearance > 0
+    Do While Not (rle_prob_output(i).value.length = 0 And rle_prob_output(i).value.size = 0)
         total = total + 1
         i = i + 1
     Loop
@@ -2196,17 +2205,17 @@ Private Sub divide_into_equal_block()
         End If
     Next
     
-    If block_divided = 0 Then
-        block_divided = 1
-    End If
-    
 End Sub
-
-Private Sub sort_probability_deacreasing()
-     Dim i, j  As Long
+Private Sub sort_probability_deacreasing(ByRef data() As RLE_datatype)
+     Dim i, j, total As Long
      Dim tmp As rle_probability
      
-     For i = 1 To UBound(rle_prob_output) - 1
+     Do While Not (rle_prob_output(i).value.length = 0 And rle_prob_output(i).value.size = 0)
+        total = total + 1
+        i = i + 1
+     Loop
+     
+     For i = 1 To total - 1
           tmp = rle_prob_output(i)
           j = i
           
@@ -2218,28 +2227,28 @@ Private Sub sort_probability_deacreasing()
                 
     Next i
 End Sub
-Private Sub cal_probability(ByRef data As RLE_datatype)
+Private Sub cal_probability(ByRef data() As RLE_datatype)
     Call sort_length(data)
-    Call sort_size
-    Call count_probability
-    Call sort_probability_deacreasing
+    Call sort_size(data)
+    Call count_probability(data)
+    Call sort_probability_deacreasing(data)
 End Sub
-Private Sub Binary_Shift_Coding(ByRef data As RLE_datatype)
+Private Sub Binary_Shift_Coding(ByRef data() As RLE_datatype)
     Call cal_probability(data)
     Call divide_into_equal_block
 End Sub
 Private Sub BinaryShift_Click()
     
-    Dim Binary_Shift_Coding As String
+    Dim Binary_Shift As String
     Dim pos1, pos2 As Long
     Dim file As Long
     Dim tmp(63) As RLE_datatype
     Dim i As Long
     
-    Binary_Shift_Coding = "Binary_Shift_Coding.txt"
+    Binary_Shift = "Binary_Shift_Coding.txt"
     file = FreeFile()
     
-    Open Binary_Shift_Coding For Binary Access Write As #file
+    Open Binary_Shift For Binary Access Write As #file
     
     For ypos = 0 To Hgt - 1 Step 8
         For xpos = 0 To wid - 1 Step 8
@@ -2250,11 +2259,12 @@ Private Sub BinaryShift_Click()
             Put #file, , CByte(Diff_Result(pos1))
             pos1 = pos1 + 1
             
-            Do While (RLE_Output(i).length = -1) And (RLE_Output(i).size = -1)
+            Do While (RLE_Output(i).length <> -1)
                 tmp(pos2) = RLE_Output(i)
                 i = i + 1
                 pos2 = pos2 + 1
             Loop
+            pos2 = pos2 + 1
             ' Binary Shift coding
             
             Call Binary_Shift_Coding(tmp)
@@ -2263,13 +2273,13 @@ Private Sub BinaryShift_Click()
             Put #file, , CByte(Diff_Result(pos1))
             pos1 = pos1 + 1
             ' Binary Shift coding
-            Call Binary_Shift_Coding
+            Call Binary_Shift_Coding(tmp)
             
             ' ********** V ********
             Put #file, , CByte(Diff_Result(pos1))
             pos1 = pos1 + 1
             ' Binary Shift coding
-            Call Binary_Shift_Coding
+            Call Binary_Shift_Coding(tmp)
         
         Next xpos
     Next ypos
