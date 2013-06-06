@@ -2214,7 +2214,7 @@ Private Sub sort_probability_deacreasing()
         j = i
         Do While j > 0
          
-         If rle_prob_output(j - 1).length > rle_prob_output(j).length Then
+         If rle_prob_output(j - 1).number_appearance < rle_prob_output(j).number_appearance Then
               tmp = rle_prob_output(j)
               rle_prob_output(j) = rle_prob_output(j - 1)
               rle_prob_output(j - 1) = tmp
