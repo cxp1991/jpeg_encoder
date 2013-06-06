@@ -2259,10 +2259,18 @@ Private Sub divide_into_equal_block_and_add_unique_symbol()
     Next i
     
     ' Add symbol
-    For i = 1 To block_divided
+    For i = 1 To block_divided - 1
+        
+        For j = distance * i To distance * i + distance - 1
+                binary_code(j) = (2 ^ (i * 2) - 1) * 2 + binary_code(j)
+        Next j
+        
     Next i
     
     'Write into file
+    For i = 0 To total - 1
+        Put #100, , binary_code(i)
+    Next i
     
 End Sub
 Private Sub cal_probability(ByRef data() As RLE_datatype)
