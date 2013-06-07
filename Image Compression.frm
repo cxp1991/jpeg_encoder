@@ -490,6 +490,11 @@ Private Type rle_probability
     number_appearance  As Integer
 End Type
 
+Private Type Binary_Table
+    codeSize As Integer
+    codeword As Long
+End Type
+
 Dim wid, Hgt
 Dim bytenew As Byte
 Dim bytepos As Integer
@@ -547,9 +552,10 @@ Dim rle_prob_input_V() As RLE_datatype
 Dim rle_prob_output_Y() As rle_probability
 Dim rle_prob_output_U() As rle_probability
 Dim rle_prob_output_V() As rle_probability
-Dim rle_prob_output() As rle_probability
-
-
+Dim rle_prob_output() As rle_probability ' not arrange
+Dim rle_prob_output_final_Y(255) As Binary_Table
+Dim rle_prob_output_final_U(255) As Binary_Table
+Dim word_code() As Long
 
 'Global index
 Dim index_1 As Long
@@ -564,7 +570,7 @@ Dim data_jpeg() As Byte
 Dim num_rle_Y As Long
 Dim num_rle_U As Long
 Dim num_rle_V As Long
-
+''''
 
 
 Private Sub open_Click()
@@ -2151,13 +2157,8 @@ Private Sub save_Click()
 End Sub
 ' Sort length decreasing
 Private Sub sort_length(ByRef data() As RLE_datatype, ByVal num As Long)
-     Dim i, j, num As Long
+     Dim i, j As Long
      Dim tmp As RLE_datatype
-     
-     'Do While Not (data(i).length = 0 And data(i).size = 0)
-     '   num = num + 1
-     '   i = i + 1
-     'Loop
      
     For i = 1 To num - 1
         j = i
@@ -2177,11 +2178,6 @@ End Sub
 Private Sub sort_size(ByRef data() As RLE_datatype, ByVal num1 As Long)
     Dim x, y, i, j, min, temp1, temp2, index, index1, num, head As Long
     head = 0
-    
-     'Do While Not (data(i).length = 0 And data(i).size = 0)
-     '   num1 = num1 + 1
-     '   i = i + 1
-     'Loop
     
     For x = 1 To num1 - 1
         
@@ -2239,7 +2235,7 @@ Private Sub count_probability(ByRef data() As RLE_datatype)
     num = 1
     temp = data(0)
     
-    For i = 0 To 63
+    For i = 0 To 255
         rle_prob_output(i).number_appearance = 0
         rle_prob_output(i).value.length = 0
         rle_prob_output(i).value.size = 0
@@ -2270,7 +2266,7 @@ Private Sub sort_probability_deacreasing()
      Dim i, j, total As Long
      Dim tmp As rle_probability
      
-     Do While Not (rle_prob_output(i).value.length = 0 And rle_prob_output(i).value.size = 0)
+     Do While Not (rle_prob_output(i).number_appearance = 0)
         total = total + 1
         i = i + 1
      Loop
@@ -2291,10 +2287,9 @@ End Sub
 ' Divide into equal blocks then and each block the unique symbol then write into file
 Private Sub divide_into_equal_block_and_add_unique_symbol()
     Dim i, j, total, block_divided, distance As Long
-    Dim binary_code() As Long
     
     ' Divide into equal block
-    Do While Not (rle_prob_output(i).value.length = 0 And rle_prob_output(i).value.size = 0)
+    Do While rle_prob_output(i).number_appearance <> 0
         total = total + 1
         i = i + 1
     Loop
@@ -2312,10 +2307,10 @@ Private Sub divide_into_equal_block_and_add_unique_symbol()
     
     distance = total / block_divided
     
-    ReDim binary_code(total - 1) As Long
+    ReDim word_code(total - 1) As Long
     
     For i = 0 To total - 1
-        binary_code(i) = j
+        word_code(i) = j
         j = j + 1
         
         If j = distance Then
@@ -2327,14 +2322,9 @@ Private Sub divide_into_equal_block_and_add_unique_symbol()
     For i = 1 To block_divided - 1
         
         For j = distance * i To distance * i + distance - 1
-                binary_code(j) = (2 ^ (i * 2) - 1) * 2 + binary_code(j)
+                word_code(j) = (2 ^ (i * 2) - 1) * 2 + word_code(j)
         Next j
         
-    Next i
-    
-    'Write into file
-    For i = 0 To total - 1
-        Put #100, , binary_code(i)
     Next i
     
 End Sub
@@ -2352,6 +2342,8 @@ Private Sub BinaryShift_Click()
     
     Dim pos1, pos2 As Long
     Dim i, j, k, xpos, ypos As Long
+    Dim binary_table_Y As String
+    Dim binary_table_U As String
     
     ReDim rle_prob_input_Y(num_rle_Y - 1) As RLE_datatype
     ReDim rle_prob_input_U(num_rle_U - 1) As RLE_datatype
@@ -2361,6 +2353,12 @@ Private Sub BinaryShift_Click()
     ReDim rle_prob_output_U(255) As rle_probability
     ReDim rle_prob_output_V(255) As rle_probability
     ReDim rle_prob_output(255) As rle_probability
+    
+    binary_table_Y = "Binary_Table_Y.txt"
+    binary_table_U = "Binary_Table_U.txt"
+    
+    Open binary_table_Y For Output Access Write As #100
+    Open binary_table_U For Output Access Write As #101
     
     ' Get RLE output
     For ypos = 0 To Hgt - 1 Step 8
@@ -2406,10 +2404,37 @@ Private Sub BinaryShift_Click()
     
     ' Binary Shift Coding
     Call Binary_Shift_Coding(rle_prob_input_Y, num_rle_Y) 'Y
-    Call Binary_Shift_Coding(rle_prob_input_U, num_rle_U) 'U
     
+    ' Add into binary table
+    i = 0
+    Do While rle_prob_output(i).number_appearance <> 0
+        rle_prob_output_final_Y(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeword = word_code(i)
+        rle_prob_output_final_Y(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeSize = numOfBit(word_code(i))
+        i = i + 1
+    Loop
+    
+    Call Binary_Shift_Coding(rle_prob_input_U, num_rle_U) 'U
+    ' Add into binary table
+    i = 0
+    Do While rle_prob_output(i).number_appearance <> 0
+        rle_prob_output_final_U(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeword = word_code(i)
+        rle_prob_output_final_U(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeSize = numOfBit(word_code(i))
+        i = i + 1
+    Loop
+    
+    ' Write into file
+    For i = 0 To 255
+        Print #100, i \ 16;
+        Print #100, i Mod 16;
+        Print #100, rle_prob_output_final_Y(i).codeSize;
+        Print #100, rle_prob_output_final_Y(i).codeword
+        Print #101, i \ 16;
+        Print #101, i Mod 16;
+        Print #101, rle_prob_output_final_U(i).codeSize;
+        Print #101, rle_prob_output_final_U(i).codeword
+    Next i
     MsgBox "Binary Shift Coding Done!", vbOKOnly, "Binary Shift Coding"
-    Close #100
+    Close #100, #101
     
 End Sub
 Private Sub exit_Click()
