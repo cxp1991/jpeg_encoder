@@ -1245,14 +1245,28 @@ Private Sub RLE_Click()
                         i = i + 1
                     Loop
                     nrzeroes = i - startpos
-                    RLE_Output(index_6).length = nrzeroes
-                    RLE_Output(index_6).size = numOfBit(zigzag64(i))
-                    index_6 = index_6 + 1
+                    
+                    If (nrzeroes >= 16) Then
+                        ' ZLE
+                        RLE_Output(index_6).length = 15
+                        RLE_Output(index_6).size = 0
+                        index_6 = index_6 + 1
+                        
+                        RLE_Output(index_6).length = nrzeroes Mod 16
+                        RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        index_6 = index_6 + 1
+                        
+                    Else
+                        RLE_Output(index_6).length = nrzeroes
+                        RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        index_6 = index_6 + 1
+                    End If
+                    
                     i = i + 1
                 Loop
                     ' Mask end of block
-                    RLE_Output(index_6).length = -1
-                    RLE_Output(index_6).size = -1
+                    RLE_Output(index_6).length = 0
+                    RLE_Output(index_6).size = 0
                     index_6 = index_6 + 1
                  
                 For i = pos4 To index_6 - 1
@@ -1279,15 +1293,29 @@ Private Sub RLE_Click()
                         i = i + 1
                     Loop
                     nrzeroes = i - startpos
-                    RLE_Output(index_6).length = nrzeroes
-                    RLE_Output(index_6).size = numOfBit(zigzag64(i))
-                    index_6 = index_6 + 1
+        
+                    If (nrzeroes >= 16) Then
+                        ' ZLE
+                        RLE_Output(index_6).length = 15
+                        RLE_Output(index_6).size = 0
+                        index_6 = index_6 + 1
+                        
+                        RLE_Output(index_6).length = nrzeroes Mod 16
+                        RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        index_6 = index_6 + 1
+                        
+                    Else
+                        RLE_Output(index_6).length = nrzeroes
+                        RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        index_6 = index_6 + 1
+                    End If
+                    
                     i = i + 1
                 Loop
                 
                     ' Mask end of block
-                    RLE_Output(index_6).length = -1
-                    RLE_Output(index_6).size = -1
+                    RLE_Output(index_6).length = 0
+                    RLE_Output(index_6).size = 0
                     index_6 = index_6 + 1
                     
                 For i = pos4 To index_6 - 1
@@ -1314,14 +1342,27 @@ Private Sub RLE_Click()
                         i = i + 1
                     Loop
                     nrzeroes = i - startpos
-                    RLE_Output(index_6).length = nrzeroes
-                    RLE_Output(index_6).size = numOfBit(zigzag64(i))
-                    index_6 = index_6 + 1
+                    
+                    If (nrzeroes >= 16) Then
+                        ' ZLE
+                        RLE_Output(index_6).length = 15
+                        RLE_Output(index_6).size = 0
+                        index_6 = index_6 + 1
+                        
+                        RLE_Output(index_6).length = nrzeroes Mod 16
+                        RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        index_6 = index_6 + 1
+                        
+                    Else
+                        RLE_Output(index_6).length = nrzeroes
+                        RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        index_6 = index_6 + 1
+                    End If
                     i = i + 1
                 Loop
                     ' Mask end of block
-                    RLE_Output(index_6).length = -1
-                    RLE_Output(index_6).size = -1
+                    RLE_Output(index_6).length = 0
+                    RLE_Output(index_6).size = 0
                     index_6 = index_6 + 1
                 
                 For i = pos4 To index_6 - 1
@@ -2290,10 +2331,10 @@ Private Sub BinaryShift_Click()
     Dim tmp(63) As RLE_datatype
     Dim i, j As Long
     
-    Binary_Shift = "Binary_Shift_Coding.txt"
-    file = FreeFile()
+    'Binary_Shift = "Binary_Shift_Coding.txt"
+    'file = FreeFile()
     
-    Open Binary_Shift For Binary Access Write As #100
+    'Open Binary_Shift For Binary Access Write As #100
     
     For ypos = 0 To Hgt - 1 Step 8
         For xpos = 0 To wid - 1 Step 8
@@ -2301,8 +2342,8 @@ Private Sub BinaryShift_Click()
             ' ********* Y ********
             
             ' Write DC
-            Put #100, , Diff_Result(pos1)
-            pos1 = pos1 + 1
+            'Put #100, , Diff_Result(pos1)
+            'pos1 = pos1 + 1
             
             Do While (RLE_Output(pos2).length <> -1)
                 tmp(i) = RLE_Output(pos2)
@@ -2324,8 +2365,8 @@ Private Sub BinaryShift_Click()
 
             ' ********* U ********
             ' Write DC
-            Put #100, , Diff_Result(pos1)
-            pos1 = pos1 + 1
+            'Put #100, , Diff_Result(pos1)
+            'pos1 = pos1 + 1
             
             Do While (RLE_Output(pos2).length <> -1)
                 tmp(i) = RLE_Output(pos2)
@@ -2346,8 +2387,8 @@ Private Sub BinaryShift_Click()
             i = 0
             
             ' ********** V ********
-            Put #100, , Diff_Result(pos1)
-            pos1 = pos1 + 1
+            'Put #100, , Diff_Result(pos1)
+            'pos1 = pos1 + 1
             
             Do While (RLE_Output(pos2).length <> -1)
                 tmp(i) = RLE_Output(pos2)
