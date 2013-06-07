@@ -539,7 +539,17 @@ Dim RLE_Output() As RLE_datatype
 Dim Huffman_Output As String
 Dim M16zeroes() As Integer
 Dim huffman_data() As Long
-Dim rle_prob_output(63) As rle_probability
+
+Dim rle_prob_input_Y() As RLE_datatype
+Dim rle_prob_input_U() As RLE_datatype
+Dim rle_prob_input_V() As RLE_datatype
+
+Dim rle_prob_output_Y() As rle_probability
+Dim rle_prob_output_U() As rle_probability
+Dim rle_prob_output_V() As rle_probability
+Dim rle_prob_output() As rle_probability
+
+
 
 'Global index
 Dim index_1 As Long
@@ -551,6 +561,10 @@ Dim index_6 As Long
 Dim index_7 As Long
 Dim size_huffman_output As Long
 Dim data_jpeg() As Byte
+Dim num_rle_Y As Long
+Dim num_rle_U As Long
+Dim num_rle_V As Long
+
 
 
 Private Sub open_Click()
@@ -1255,11 +1269,13 @@ Private Sub RLE_Click()
                         RLE_Output(index_6).length = nrzeroes Mod 16
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
                         index_6 = index_6 + 1
+                        num_rle_Y = num_rle_Y + 2
                         
                     Else
                         RLE_Output(index_6).length = nrzeroes
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
                         index_6 = index_6 + 1
+                        num_rle_Y = num_rle_Y + 1
                     End If
                     
                     i = i + 1
@@ -1268,7 +1284,8 @@ Private Sub RLE_Click()
                     RLE_Output(index_6).length = 0
                     RLE_Output(index_6).size = 0
                     index_6 = index_6 + 1
-                 
+                    num_rle_Y = num_rle_Y + 1
+                    
                 For i = pos4 To index_6 - 1
                     Print #f2, RLE_Output(i).length;
                     Print #f2, RLE_Output(i).size
@@ -1304,10 +1321,12 @@ Private Sub RLE_Click()
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
                         index_6 = index_6 + 1
                         
+                        num_rle_U = num_rle_U + 2
                     Else
                         RLE_Output(index_6).length = nrzeroes
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
                         index_6 = index_6 + 1
+                        num_rle_U = num_rle_U + 1
                     End If
                     
                     i = i + 1
@@ -1317,6 +1336,7 @@ Private Sub RLE_Click()
                     RLE_Output(index_6).length = 0
                     RLE_Output(index_6).size = 0
                     index_6 = index_6 + 1
+                    num_rle_U = num_rle_U + 1
                     
                 For i = pos4 To index_6 - 1
                     Print #f3, RLE_Output(i).length;
@@ -1353,10 +1373,13 @@ Private Sub RLE_Click()
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
                         index_6 = index_6 + 1
                         
+                        num_rle_V = num_rle_V + 2
+                        
                     Else
                         RLE_Output(index_6).length = nrzeroes
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
                         index_6 = index_6 + 1
+                        num_rle_V = num_rle_V + 1
                     End If
                     i = i + 1
                 Loop
@@ -1364,6 +1387,7 @@ Private Sub RLE_Click()
                     RLE_Output(index_6).length = 0
                     RLE_Output(index_6).size = 0
                     index_6 = index_6 + 1
+                    num_rle_V = num_rle_V + 1
                 
                 For i = pos4 To index_6 - 1
                     Print #f4, RLE_Output(i).length;
@@ -2126,14 +2150,14 @@ Private Sub save_Click()
     
 End Sub
 ' Sort length decreasing
-Private Sub sort_length(ByRef data() As RLE_datatype)
+Private Sub sort_length(ByRef data() As RLE_datatype, ByVal num As Long)
      Dim i, j, num As Long
      Dim tmp As RLE_datatype
      
-     Do While Not (data(i).length = 0 And data(i).size = 0)
-        num = num + 1
-        i = i + 1
-     Loop
+     'Do While Not (data(i).length = 0 And data(i).size = 0)
+     '   num = num + 1
+     '   i = i + 1
+     'Loop
      
     For i = 1 To num - 1
         j = i
@@ -2150,14 +2174,14 @@ Private Sub sort_length(ByRef data() As RLE_datatype)
 
 End Sub
 ' Sort size decreasing in the same length
-Private Sub sort_size(ByRef data() As RLE_datatype)
-    Dim x, y, i, j, min, temp1, temp2, index, index1, num, num1, head As Long
+Private Sub sort_size(ByRef data() As RLE_datatype, ByVal num1 As Long)
+    Dim x, y, i, j, min, temp1, temp2, index, index1, num, head As Long
     head = 0
     
-     Do While Not (data(i).length = 0 And data(i).size = 0)
-        num1 = num1 + 1
-        i = i + 1
-     Loop
+     'Do While Not (data(i).length = 0 And data(i).size = 0)
+     '   num1 = num1 + 1
+     '   i = i + 1
+     'Loop
     
     For x = 1 To num1 - 1
         
@@ -2314,102 +2338,75 @@ Private Sub divide_into_equal_block_and_add_unique_symbol()
     Next i
     
 End Sub
-Private Sub cal_probability(ByRef data() As RLE_datatype)
-    Call sort_length(data)
-    Call sort_size(data)
+Private Sub cal_probability(ByRef data() As RLE_datatype, ByVal num As Long)
+    Call sort_length(data, num)
+    Call sort_size(data, num)
     Call count_probability(data)
     Call sort_probability_deacreasing
 End Sub
-Private Sub Binary_Shift_Coding(ByRef data() As RLE_datatype)
-    Call cal_probability(data)
+Private Sub Binary_Shift_Coding(ByRef data() As RLE_datatype, ByVal num As Long)
+    Call cal_probability(data, num)
     Call divide_into_equal_block_and_add_unique_symbol
 End Sub
 Private Sub BinaryShift_Click()
     
-    Dim Binary_Shift As String
     Dim pos1, pos2 As Long
-    Dim tmp(63) As RLE_datatype
-    Dim i, j As Long
+    Dim i, j, k, xpos, ypos As Long
     
-    'Binary_Shift = "Binary_Shift_Coding.txt"
-    'file = FreeFile()
+    ReDim rle_prob_input_Y(num_rle_Y - 1) As RLE_datatype
+    ReDim rle_prob_input_U(num_rle_U - 1) As RLE_datatype
+    ReDim rle_prob_input_V(num_rle_V - 1) As RLE_datatype
     
-    'Open Binary_Shift For Binary Access Write As #100
+    ReDim rle_prob_output_Y(255) As rle_probability
+    ReDim rle_prob_output_U(255) As rle_probability
+    ReDim rle_prob_output_V(255) As rle_probability
+    ReDim rle_prob_output(255) As rle_probability
     
+    ' Get RLE output
     For ypos = 0 To Hgt - 1 Step 8
-        For xpos = 0 To wid - 1 Step 8
-            
-            ' ********* Y ********
-            
-            ' Write DC
-            'Put #100, , Diff_Result(pos1)
-            'pos1 = pos1 + 1
-            
-            Do While (RLE_Output(pos2).length <> -1)
-                tmp(i) = RLE_Output(pos2)
+         For xpos = 0 To Hgt - 1 Step 8
+            ' Y
+            Do While Not (RLE_Output(pos1).length = 0 And RLE_Output(pos1).size = 0)
+                rle_prob_input_Y(i) = RLE_Output(pos1)
                 i = i + 1
-                pos2 = pos2 + 1
+                pos1 = pos1 + 1
             Loop
             
-            pos2 = pos2 + 1
-            For j = i To 63
-                tmp(j).length = 0
-                tmp(j).size = 0
-            Next j
-            
-            ' Binary Shift Coding
-            If i > 0 Then
-                Call Binary_Shift_Coding(tmp)
-            End If
-            i = 0
-
-            ' ********* U ********
-            ' Write DC
-            'Put #100, , Diff_Result(pos1)
-            'pos1 = pos1 + 1
-            
-            Do While (RLE_Output(pos2).length <> -1)
-                tmp(i) = RLE_Output(pos2)
-                i = i + 1
-                pos2 = pos2 + 1
+            rle_prob_input_Y(i).length = 0
+            rle_prob_input_Y(i).size = 0
+            i = i + 1
+            pos1 = pos1 + 1
+                
+            'U
+            Do While Not (RLE_Output(pos1).length = 0 And RLE_Output(pos1).size = 0)
+                rle_prob_input_U(j) = RLE_Output(pos1)
+                j = j + 1
+                pos1 = pos1 + 1
             Loop
             
-            pos2 = pos2 + 1
-            For j = i To 63
-                tmp(j).length = 0
-                tmp(j).size = 0
-            Next j
+            rle_prob_input_U(j).length = 0
+            rle_prob_input_U(j).size = 0
+            j = j + 1
+            pos1 = pos1 + 1
             
-            ' Binary Shift Coding
-            If i > 0 Then
-                Call Binary_Shift_Coding(tmp)
-            End If
-            i = 0
-            
-            ' ********** V ********
-            'Put #100, , Diff_Result(pos1)
-            'pos1 = pos1 + 1
-            
-            Do While (RLE_Output(pos2).length <> -1)
-                tmp(i) = RLE_Output(pos2)
-                i = i + 1
-                pos2 = pos2 + 1
+            'V
+            Do While Not (RLE_Output(pos1).length = 0 And RLE_Output(pos1).size = 0)
+                rle_prob_input_V(k) = RLE_Output(pos1)
+                k = k + 1
+                pos1 = pos1 + 1
             Loop
             
-            pos2 = pos2 + 1
-            For j = i To 63
-                tmp(j).length = 0
-                tmp(j).size = 0
-            Next j
-            
-            ' Binary Shift Coding
-            If i > 0 Then
-                Call Binary_Shift_Coding(tmp)
-            End If
-            i = 0
-        
+            rle_prob_input_V(k).length = 0
+            rle_prob_input_V(k).size = 0
+            k = k + 1
+            pos1 = pos1 + 1
+           
         Next xpos
     Next ypos
+    
+    ' Binary Shift Coding
+    Call Binary_Shift_Coding(rle_prob_input_Y, num_rle_Y) 'Y
+    Call Binary_Shift_Coding(rle_prob_input_U, num_rle_U) 'U
     
     MsgBox "Binary Shift Coding Done!", vbOKOnly, "Binary Shift Coding"
     Close #100
