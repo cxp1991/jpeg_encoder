@@ -541,6 +541,7 @@ Dim ZigZag_Result() As Integer
 Dim Diff_Result() As Long
 Dim DC_Result() As Integer
 Dim RLE_Output() As RLE_datatype
+Dim RLE_Binary_Coding() As RLE_datatype
 Dim Huffman_Output As String
 Dim M16zeroes() As Integer
 Dim huffman_data() As Long
@@ -555,7 +556,14 @@ Dim rle_prob_output_V() As rle_probability
 Dim rle_prob_output() As rle_probability ' not arrange
 Dim rle_prob_output_final_Y(255) As Binary_Table
 Dim rle_prob_output_final_U(255) As Binary_Table
+Dim rle_prob_output_final_V(255) As Binary_Table
+Dim rle_temp_Y(255) As Integer
+Dim rle_temp_U(255) As Integer
+Dim rle_temp_V(255) As Integer
 Dim word_code() As Long
+Dim dummy_rle_Y As rle_probability
+Dim dummy_rle_U As rle_probability
+Dim dummy_rle_V As rle_probability
 
 'Global index
 Dim index_1 As Long
@@ -1184,6 +1192,7 @@ Private Sub RLE_Click()
     Dim nrzeroes As Byte
     Dim zigzag64(63) As Integer
     ReDim RLE_Output(wid * Hgt * 3 - 1) As RLE_datatype
+    ReDim RLE_Binary_Coding(wid * Hgt * 3 - 1) As RLE_datatype
     Dim RLE_Y_File As String
     Dim RLE_U_File As String
     Dim RLE_V_File As String
@@ -1270,16 +1279,25 @@ Private Sub RLE_Click()
                         ' ZLE
                         RLE_Output(index_6).length = 15
                         RLE_Output(index_6).size = 0
+                        RLE_Binary_Coding(index_6).length = 15
+                        RLE_Binary_Coding(index_6).size = 0
+                        rle_temp_Y(15 * 16) = rle_temp_Y(15 * 16) + 1
                         index_6 = index_6 + 1
                         
                         RLE_Output(index_6).length = nrzeroes Mod 16
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        RLE_Binary_Coding(index_6).length = nrzeroes Mod 16
+                        RLE_Binary_Coding(index_6).size = zigzag64(i)
+                        rle_temp_Y(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_Y(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         num_rle_Y = num_rle_Y + 2
                         
                     Else
                         RLE_Output(index_6).length = nrzeroes
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        RLE_Binary_Coding(index_6).length = nrzeroes
+                        RLE_Binary_Coding(index_6).size = zigzag64(i)
+                        rle_temp_Y(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_Y(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         num_rle_Y = num_rle_Y + 1
                     End If
@@ -1289,6 +1307,9 @@ Private Sub RLE_Click()
                     ' Mask end of block
                     RLE_Output(index_6).length = 0
                     RLE_Output(index_6).size = 0
+                    RLE_Binary_Coding(index_6).length = 0
+                    RLE_Binary_Coding(index_6).size = 0
+                    rle_temp_Y(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_Y(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                     index_6 = index_6 + 1
                     num_rle_Y = num_rle_Y + 1
                     
@@ -1321,16 +1342,25 @@ Private Sub RLE_Click()
                         ' ZLE
                         RLE_Output(index_6).length = 15
                         RLE_Output(index_6).size = 0
+                        RLE_Binary_Coding(index_6).length = 15
+                        RLE_Binary_Coding(index_6).size = 0
+                        rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         
                         RLE_Output(index_6).length = nrzeroes Mod 16
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        RLE_Binary_Coding(index_6).length = nrzeroes Mod 16
+                        RLE_Binary_Coding(index_6).size = zigzag64(i)
+                        rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         
                         num_rle_U = num_rle_U + 2
                     Else
                         RLE_Output(index_6).length = nrzeroes
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        RLE_Binary_Coding(index_6).length = nrzeroes
+                        RLE_Binary_Coding(index_6).size = zigzag64(i)
+                        rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         num_rle_U = num_rle_U + 1
                     End If
@@ -1341,6 +1371,9 @@ Private Sub RLE_Click()
                     ' Mask end of block
                     RLE_Output(index_6).length = 0
                     RLE_Output(index_6).size = 0
+                    RLE_Binary_Coding(index_6).length = 0
+                    RLE_Binary_Coding(index_6).size = 0
+                    rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_U(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                     index_6 = index_6 + 1
                     num_rle_U = num_rle_U + 1
                     
@@ -1373,10 +1406,16 @@ Private Sub RLE_Click()
                         ' ZLE
                         RLE_Output(index_6).length = 15
                         RLE_Output(index_6).size = 0
+                        RLE_Binary_Coding(index_6).length = 15
+                        RLE_Binary_Coding(index_6).size = 0
+                        rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         
                         RLE_Output(index_6).length = nrzeroes Mod 16
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        RLE_Binary_Coding(index_6).length = nrzeroes Mod 16
+                        RLE_Binary_Coding(index_6).size = zigzag64(i)
+                        rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         
                         num_rle_V = num_rle_V + 2
@@ -1384,6 +1423,9 @@ Private Sub RLE_Click()
                     Else
                         RLE_Output(index_6).length = nrzeroes
                         RLE_Output(index_6).size = numOfBit(zigzag64(i))
+                        RLE_Binary_Coding(index_6).length = nrzeroes
+                        RLE_Binary_Coding(index_6).size = zigzag64(i)
+                        rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                         index_6 = index_6 + 1
                         num_rle_V = num_rle_V + 1
                     End If
@@ -1392,6 +1434,9 @@ Private Sub RLE_Click()
                     ' Mask end of block
                     RLE_Output(index_6).length = 0
                     RLE_Output(index_6).size = 0
+                    RLE_Binary_Coding(index_6).length = 0
+                    RLE_Binary_Coding(index_6).size = 0
+                    rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) = rle_temp_V(RLE_Output(index_6).length * 16 + RLE_Output(index_6).size) + 1
                     index_6 = index_6 + 1
                     num_rle_V = num_rle_V + 1
                 
@@ -2121,12 +2166,12 @@ Private Sub Hufman_Click()
 End Sub
 Private Sub save_Click()
     ReDim data_jpeg(size_huffman_output) As Byte
-    Dim xpos, ypos As Long
+    Dim xpos, ypos, pos1, pos2 As Long
     JPG_filename = BMP_filename
-    JPG_filename = Replace(JPG_filename, ".bmp", ".jpg")
+    JPG_filename = Replace(JPG_filename, ".bmp", ".jpeg")
     
     Open JPG_filename For Binary Access Write As #1
-    Open Huffman_Output For Binary Access Read As #2
+    'Open Huffman_Output For Binary Access Read As #2
     
     'Write header
     Put #1, , CByte(&HFFD8& \ 256)
@@ -2138,8 +2183,47 @@ Private Sub save_Click()
     Call write_SOSinfo
     
     'Write huffman output
-    Get #2, , data_jpeg
-    Put #1, , data_jpeg
+    'Get #2, , data_jpeg
+    'Put #1, , data_jpeg
+      For ypos = 0 To Hgt - 1 Step 8
+        For xpos = 0 To wid - 1 Step 8
+            Put #1, , numOfBit(Diff_Result(pos1))
+            Put #1, , Diff_Result(pos1)
+            'Y
+             Do While RLE_Output(pos2).length <> 0 And RLE_Output(pos2).size <> 0
+                Put #1, , rle_prob_output_final_Y(RLE_Output(pos2).length * 16 + RLE_Output(pos2).size)
+                Put #1, , RLE_Binary_Coding(pos2)
+                pos2 = pos2 + 1
+             Loop
+             Put #1, , rle_prob_output_final_Y(RLE_Output(pos2).length * 16 + RLE_Output(pos2).size)
+             Put #1, , RLE_Binary_Coding(pos2)
+             pos2 = pos2 + 1
+             
+             Put #1, , numOfBit(Diff_Result(pos1))
+            Put #1, , Diff_Result(pos1)
+            ' U
+             Do While RLE_Output(pos2).length <> 0 And RLE_Output(pos2).size <> 0
+                Put #1, , rle_prob_output_final_U(RLE_Output(pos2).length * 16 + RLE_Output(pos2).size)
+                Put #1, , RLE_Binary_Coding(pos2)
+                pos2 = pos2 + 1
+             Loop
+             Put #1, , rle_prob_output_final_U(RLE_Output(pos2).length * 16 + RLE_Output(pos2).size)
+             Put #1, , RLE_Binary_Coding(pos2)
+             pos2 = pos2 + 1
+             'V
+             Put #1, , numOfBit(Diff_Result(pos1))
+             Put #1, , Diff_Result(pos1)
+            
+             Do While RLE_Output(pos2).length <> 0 And RLE_Output(pos2).size <> 0
+                Put #1, , rle_prob_output_final_V(RLE_Output(pos2).length * 16 + RLE_Output(pos2).size)
+                Put #1, , RLE_Binary_Coding(pos2)
+                pos2 = pos2 + 1
+             Loop
+             Put #1, , rle_prob_output_final_V(RLE_Output(pos2).length * 16 + RLE_Output(pos2).size)
+             Put #1, , RLE_Binary_Coding(pos2)
+             pos2 = pos2 + 1
+        Next xpos
+      Next ypos
     
     'Write footer
     Dim fillbits As bitstring
@@ -2262,15 +2346,82 @@ Private Sub count_probability(ByRef data() As RLE_datatype)
     
 End Sub
 ' Sort probability decreasing
-Private Sub sort_probability_deacreasing()
-     Dim i, j, total As Long
+Private Sub sort_probability_deacreasing(ByVal id As Integer)
+     Dim i, j, total, pos As Long
      Dim tmp As rle_probability
      
-     Do While Not (rle_prob_output(i).number_appearance = 0)
-        total = total + 1
-        i = i + 1
-     Loop
+     'Do While Not (rle_prob_output(i).number_appearance = 0)
+     '   total = total + 1
+     '   i = i + 1
+     'Loop
     
+       ' Read rle output
+    If (id = 0) Then
+        For i = 0 To 255
+            If (rle_temp_Y(i) <> 0) Then
+                rle_prob_output(pos).value.length = i \ 16
+                rle_prob_output(pos).value.size = i Mod 16
+                rle_prob_output(pos).number_appearance = rle_temp_Y(i)
+                pos = pos + 1
+            End If
+        Next i
+    End If
+    
+    If (id = 0) Then
+        For i = 0 To 255
+            If (rle_temp_Y(i) = 0) Then
+                dummy_rle_Y.value.length = i \ 16
+                dummy_rle_Y.value.size = i Mod 16
+                Exit For
+            End If
+        Next i
+    End If
+    
+    If (id = 1) Then
+        For i = 0 To 255
+            If (rle_temp_U(i) <> 0) Then
+                rle_prob_output(pos).value.length = i \ 16
+                rle_prob_output(pos).value.size = i Mod 16
+                rle_prob_output(pos).number_appearance = rle_temp_U(i)
+                pos = pos + 1
+            End If
+        Next i
+    End If
+    
+    If (id = 1) Then
+        For i = 0 To 255
+            If (rle_temp_U(i) = 0) Then
+                dummy_rle_U.value.length = i \ 16
+                dummy_rle_U.value.size = i Mod 16
+                Exit For
+            End If
+        Next i
+    End If
+    
+    If (id = 2) Then
+        For i = 0 To 255
+            If (rle_temp_V(i) <> 0) Then
+                rle_prob_output(pos).value.length = i \ 16
+                rle_prob_output(pos).value.size = i Mod 16
+                rle_prob_output(pos).number_appearance = rle_temp_V(i)
+                pos = pos + 1
+            End If
+        Next i
+    End If
+    
+    If (id = 2) Then
+        For i = 0 To 255
+            If (rle_temp_V(i) = 0) Then
+                dummy_rle_V.value.length = i \ 16
+                dummy_rle_V.value.size = i Mod 16
+                Exit For
+            End If
+        Next i
+    End If
+    
+    
+    total = pos + 1
+        
      For i = 1 To total - 1
         j = i
         Do While j > 0
@@ -2285,7 +2436,7 @@ Private Sub sort_probability_deacreasing()
     Next i
 End Sub
 ' Divide into equal blocks then and each block the unique symbol then write into file
-Private Sub divide_into_equal_block_and_add_unique_symbol()
+Private Sub divide_into_equal_block_and_add_unique_symbol(ByVal id As Integer)
     Dim i, j, total, block_divided, distance As Long
     
     ' Divide into equal block
@@ -2303,6 +2454,29 @@ Private Sub divide_into_equal_block_and_add_unique_symbol()
     
     If total = 1 Then
         block_divided = 1
+    End If
+    
+    If block_divided > 4 Then
+        If (id = 0) Then
+            rle_prob_output(total).value = dummy_rle_Y.value
+        End If
+        If (id = 1) Then
+            rle_prob_output(total).value = dummy_rle_U.value
+        End If
+         If (id = 2) Then
+            rle_prob_output(total).value = dummy_rle_V.value
+        End If
+        
+        For i = 1 To total + 1
+            If (total + 1) Mod i = 0 And i > 1 Then
+                block_divided = i
+                Exit For
+            End If
+        Next
+    
+        If total = 1 Then
+            block_divided = 1
+        End If
     End If
     
     distance = total / block_divided
@@ -2323,21 +2497,21 @@ Private Sub divide_into_equal_block_and_add_unique_symbol()
     For i = 1 To block_divided - 1
         
         For j = distance * i To distance * i + distance - 1
-                word_code(j) = (2 ^ (i * 2) - 1) * 2 + word_code(j)
+                word_code(j) = word_code(j) + (2 ^ (i * 2) - 1) * 2 ^ (numOfBit(distance))
         Next j
         
     Next i
     
 End Sub
-Private Sub cal_probability(ByRef data() As RLE_datatype, ByVal num As Long)
-    Call sort_length(data, num)
-    Call sort_size(data, num)
-    Call count_probability(data)
-    Call sort_probability_deacreasing
+Private Sub cal_probability(ByRef data() As RLE_datatype, ByVal num As Long, ByVal i As Integer)
+    'Call sort_length(data, num)
+    'Call sort_size(data, num)
+    'Call count_probability(data)
+    Call sort_probability_deacreasing(i)
 End Sub
-Private Sub Binary_Shift_Coding(ByRef data() As RLE_datatype, ByVal num As Long)
-    Call cal_probability(data, num)
-    Call divide_into_equal_block_and_add_unique_symbol
+Private Sub Binary_Shift_Coding(ByRef data() As RLE_datatype, ByVal num As Long, ByVal i As Integer)
+    Call cal_probability(data, num, i)
+    Call divide_into_equal_block_and_add_unique_symbol(i)
 End Sub
 Private Sub BinaryShift_Click()
     
@@ -2345,6 +2519,7 @@ Private Sub BinaryShift_Click()
     Dim i, j, k, xpos, ypos As Long
     Dim binary_table_Y As String
     Dim binary_table_U As String
+     Dim binary_table_V As String
     
     ReDim rle_prob_input_Y(num_rle_Y - 1) As RLE_datatype
     ReDim rle_prob_input_U(num_rle_U - 1) As RLE_datatype
@@ -2357,9 +2532,11 @@ Private Sub BinaryShift_Click()
     
     binary_table_Y = "Binary_Table_Y.txt"
     binary_table_U = "Binary_Table_U.txt"
+    binary_table_V = "Binary_Table_V.txt"
     
     Open binary_table_Y For Output Access Write As #100
     Open binary_table_U For Output Access Write As #101
+    Open binary_table_V For Output Access Write As #102
     
     ' Get RLE output
     For ypos = 0 To Hgt - 1 Step 8
@@ -2404,7 +2581,7 @@ Private Sub BinaryShift_Click()
     Next ypos
     
     ' Binary Shift Coding
-    Call Binary_Shift_Coding(rle_prob_input_Y, num_rle_Y) 'Y
+    Call Binary_Shift_Coding(rle_prob_input_Y, num_rle_Y, 0) 'Y
     
     ' Add into binary table
     i = 0
@@ -2414,12 +2591,21 @@ Private Sub BinaryShift_Click()
         i = i + 1
     Loop
     
-    Call Binary_Shift_Coding(rle_prob_input_U, num_rle_U) 'U
+    Call Binary_Shift_Coding(rle_prob_input_U, num_rle_U, 1) 'U
     ' Add into binary table
     i = 0
     Do While rle_prob_output(i).number_appearance <> 0
         rle_prob_output_final_U(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeword = word_code(i)
         rle_prob_output_final_U(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeSize = numOfBit(word_code(i))
+        i = i + 1
+    Loop
+    
+    Call Binary_Shift_Coding(rle_prob_input_V, num_rle_V, 2) 'U
+    ' Add into binary table
+    i = 0
+    Do While rle_prob_output(i).number_appearance <> 0
+        rle_prob_output_final_V(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeword = word_code(i)
+        rle_prob_output_final_V(rle_prob_output(i).value.length * 16 + rle_prob_output(i).value.size).codeSize = numOfBit(word_code(i))
         i = i + 1
     Loop
     
@@ -2437,22 +2623,34 @@ Private Sub BinaryShift_Click()
     Print #101, "   CodeSize";
     Print #101, "   CodeWord"
     
+    Print #102, "Binary table of [V] component"
+    Print #102, ""
+    Print #102, "Run/Size";
+    Print #102, "   CodeSize";
+    Print #102, "   CodeWord"
+    
     For i = 0 To 255
         Print #100, i \ 16;
         Print #100, i Mod 16;
         Print #100, "       ";
         Print #100, rle_prob_output_final_Y(i).codeSize;
         Print #100, "       ";
-        Print #100, rle_prob_output_final_Y(i).codeword
+        Print #100, Bin(rle_prob_output_final_Y(i).codeword)
         Print #101, i \ 16;
         Print #101, i Mod 16;
         Print #101, "       ";
         Print #101, rle_prob_output_final_U(i).codeSize;
         Print #101, "       ";
-        Print #101, rle_prob_output_final_U(i).codeword
+        Print #101, Bin(rle_prob_output_final_U(i).codeword)
+        Print #102, i \ 16;
+        Print #102, i Mod 16;
+        Print #102, "       ";
+        Print #102, rle_prob_output_final_V(i).codeSize;
+        Print #102, "       ";
+        Print #102, Bin(rle_prob_output_final_V(i).codeword)
     Next i
     MsgBox "Binary Shift Coding Done!", vbOKOnly, "Binary Shift Coding"
-    Close #100, #101
+    Close #100, #101, #102
     
 End Sub
 Private Sub exit_Click()
@@ -2462,4 +2660,31 @@ Private Sub exit_Click()
         End
     End If
 End Sub
+Private Function Bin(ByVal x As Long) As String
+
+Dim temp As String
+
+temp = ""
+'start translation to binary
+Do
+
+
+' Check whether it is 1 bit or 0 bit
+If x Mod 2 Then
+      temp = "1" + temp
+Else
+      temp = "0" + temp
+End If
+
+x = x \ 2
+'  Normal division     7/2 = 3.5
+' Integer division     7\2 = 3
+'
+
+If x < 1 Then Exit Do
+
+Loop '
+Bin = temp
+
+End Function
 
