@@ -2307,6 +2307,7 @@ Private Sub divide_into_equal_block_and_add_unique_symbol()
     
     distance = total / block_divided
     
+    ' Convert into binary code
     ReDim word_code(total - 1) As Long
     
     For i = 0 To total - 1
@@ -2423,14 +2424,31 @@ Private Sub BinaryShift_Click()
     Loop
     
     ' Write into file
+    
+    Print #100, "Binary table of [Y] component"
+    Print #100, ""
+    Print #100, "Run/Size";
+    Print #100, "   CodeSize";
+    Print #100, "   CodeWord"
+    
+    Print #101, "Binary table of [U] component"
+    Print #101, ""
+    Print #101, "Run/Size";
+    Print #101, "   CodeSize";
+    Print #101, "   CodeWord"
+    
     For i = 0 To 255
         Print #100, i \ 16;
         Print #100, i Mod 16;
+        Print #100, "       ";
         Print #100, rle_prob_output_final_Y(i).codeSize;
+        Print #100, "       ";
         Print #100, rle_prob_output_final_Y(i).codeword
         Print #101, i \ 16;
         Print #101, i Mod 16;
+        Print #101, "       ";
         Print #101, rle_prob_output_final_U(i).codeSize;
+        Print #101, "       ";
         Print #101, rle_prob_output_final_U(i).codeword
     Next i
     MsgBox "Binary Shift Coding Done!", vbOKOnly, "Binary Shift Coding"
